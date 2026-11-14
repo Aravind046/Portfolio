@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { Caveat, Mrs_Saint_Delafield } from "next/font/google";
 import { PROFILE } from "@/lib/data";
 import "./globals.css";
 
@@ -23,6 +24,24 @@ const jetbrains = localFont({
   src: "../fonts/JetBrainsMono-Variable.woff2",
   variable: "--font-jetbrains",
   weight: "100 800",
+  display: "swap",
+  preload: false,
+});
+
+/** Handwritten signature on the back of the hero ticket (self-hosted by next/font at build time). */
+const signature = Mrs_Saint_Delafield({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-signature",
+  display: "swap",
+  preload: false,
+});
+
+/** Handwritten notes beside the project mockups. */
+const hand = Caveat({
+  weight: ["500"],
+  subsets: ["latin"],
+  variable: "--font-hand",
   display: "swap",
   preload: false,
 });
@@ -52,7 +71,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${interTight.variable} ${instrument.variable} ${jetbrains.variable}`}>
+    <html lang="en" className={`${interTight.variable} ${instrument.variable} ${jetbrains.variable} ${signature.variable} ${hand.variable}`}>
       <body>{children}</body>
     </html>
   );

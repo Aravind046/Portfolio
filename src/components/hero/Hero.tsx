@@ -181,9 +181,6 @@ export default function Hero() {
             <a href="#contact" className="btn btn-ghost" onClick={(e) => go(e, "#contact")}>
               Let&apos;s talk
             </a>
-            <a href={PROFILE.resume} download={PROFILE.resumeFileName} className="btn btn-ghost">
-              Résumé <span aria-hidden="true">↓</span>
-            </a>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import Navigation from "./Navigation";
-import Hero from "./hero/Hero";
-import About from "./sections/About";
+import TicketHero from "./hero/TicketHero";
+import Statement from "./sections/Statement";
 import Skills from "./sections/Skills";
 import Work from "./sections/Work";
 import Certifications from "./sections/Certifications";
@@ -10,7 +10,7 @@ import Footer from "./sections/Footer";
 import RevealObserver from "./ui/RevealObserver";
 import { SmoothScroll } from "@/lib/scroll";
 
-/** Hero → About → Skills → Work → Certifications → Experience → Contact.
+/** Hero → Skills → Work → Certifications → Experience → Contact.
  *  (Achievements is omitted: the résumé lists none.) */
 export default function App() {
   return (
@@ -22,9 +22,9 @@ export default function App() {
       <RevealObserver />
       <Navigation />
       <main id="main">
-        <Hero />
-        <About />
+        <TicketHero />
         <Skills />
+        <Statement />
         <Work />
         <Certifications />
         <Experience />

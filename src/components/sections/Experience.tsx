@@ -1,134 +1,100 @@
-"use client";
-
-import { useRef } from "react";
-import { EDUCATION, EXPERIENCE, SECTION_INDEX } from "@/lib/data";
-import { useScrollProgress } from "@/lib/hooks";
-import { scrollToTarget } from "@/lib/scroll";
+import { EXPERIENCE, SECTION_INDEX } from "@/lib/data";
 import SectionTag from "../ui/SectionTag";
-import Heading from "../ui/Heading";
 
-type Stop = { key: string; year: string; title: string; place: string; detail: string[]; kind: "Education" | "Work" };
+/* ------------------------------------------------------------------ helpers */
 
-const STOPS: Stop[] = [
-  ...[...EDUCATION].reverse().map((e) => ({
-    key: e.title,
-    year: `${e.start} – ${e.end}`,
-    title: e.title,
-    place: `${e.school}, ${e.place}`,
-    detail: [],
-    kind: "Education" as const,
-  })),
-  ...[...EXPERIENCE].reverse().map((r) => ({
+/** Placeholder-logo colours, borrowed from the hero ticket. */
+const SWATCH = ["#ff5b22", "#7a5cff", "#0f6a48", "#1d8cff", "#161513", "#c8102e"];
+
+const yearOf = (s: string) => (/present/i.test(s) ? "Now" : (s.match(/\d{4}/)?.[0] ?? s));
+
+type Entry = {
+  key: string;
+  name: string; // company
+  desc: string; // one line under the name
+  role: string; // mono column
+  years: string; // mono column
+  mark: string; // placeholder logo letter
+  color: string;
+  logo?: string;
+  now?: boolean;
+};
+
+const ENTRIES: Entry[] = EXPERIENCE.map((r, i) => ({
     key: `${r.company}-${r.start}`,
-    year: `${r.start} – ${r.end}`,
-    title: r.title,
-    place: `${r.company}, ${r.place}`,
-    detail: r.points,
-    kind: "Work" as const,
-  })),
-];
+    name: r.company,
+    desc: r.points[0] ?? "",
+    role: r.title,
+    years: `${yearOf(r.start)} — ${yearOf(r.end)}`,
+    mark: r.company[0].toUpperCase(),
+    color: SWATCH[i % SWATCH.length],
+    logo: r.logo,
+    now: /present/i.test(r.end),
+  }));
+
+/* ------------------------------------------------------------------ section */
 
 export default function Experience() {
-  const listRef = useRef<HTMLOListElement>(null);
-
-  useScrollProgress(
-    listRef,
-    (p, rect) => {
-      const list = listRef.current;
-      if (!list) return;
-      list.style.setProperty("--p", p.toFixed(4));
-      const reach = p * rect.height;
-      list.querySelectorAll<HTMLElement>(":scope > li").forEach((li) => {
-        li.classList.toggle("lit", li.offsetTop + 14 <= reach);
-      });
-    },
-    { start: 0.62, end: 0.62 },
-  );
-
   return (
-    <section id="experience" className="section exp" aria-labelledby="exp-title">
-      <div className="wrap exp-grid">
-        <div className="exp-head">
-          <SectionTag index={SECTION_INDEX.experience} label="Education & experience" />
-          <Heading id="exp-title" className="exp-title" lines={["One continuous"]} accent="path." />
-          <p className="lede rv">From a Bachelor of Information Technology in 2012 to Senior UI/UX Designer today — education and work, in order.</p>
-        </div>
+    <section id="experience" className="section xp" aria-labelledby="exp-title">
+      <div className="wrap">
+        <SectionTag index={SECTION_INDEX.experience} label="Experience" />
+        <h2 id="exp-title" className="xp-title rv">
+          Eight years, UI designer to Senior.
+        </h2>
+        <p className="xp-sub rv" style={{ ["--i" as string]: 1 }}>
+          The teams I&apos;ve designed with along the way, end to end.
+        </p>
 
-        <ol className="tl" ref={listRef}>
-          {STOPS.map((s) => (
-            <li key={s.key} className="tl-stop">
-              <span className="tl-dot" aria-hidden="true" />
-              <div className="tl-card">
-                <p className="tl-year mono">
-                  {s.year} <span>· {s.kind}</span>
-                </p>
-                <h3 className="tl-title">{s.title}</h3>
-                <p className="tl-place">{s.place}</p>
-                {s.detail.length > 0 && (
-                  <ul className="tl-detail">
-                    {s.detail.map((d) => (
-                      <li key={d}>{d}</li>
-                    ))}
-                  </ul>
+        <ol className="xl" aria-label="Work history">
+          {ENTRIES.map((e, i) => (
+            <li key={e.key} className="xl-item rv" style={{ ["--c" as string]: e.color, ["--i" as string]: Math.min(i, 4) }}>
+              <span className="xl-logo" aria-hidden="true">
+                {e.logo ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={e.logo} alt="" />
+                ) : (
+                  e.mark
                 )}
+              </span>
+              <div className="xl-main">
+                <h3>{e.name}</h3>
+                <p>{e.desc}</p>
               </div>
+              <span className="xl-role">{e.role}</span>
+              <span className="xl-years">
+                {e.now && <i aria-hidden="true" />}
+                {e.years}
+              </span>
             </li>
           ))}
-          <li className="tl-stop tl-next">
-            <span className="tl-dot" aria-hidden="true" />
-            <div className="tl-card dashed">
-              <p className="tl-year mono">Next</p>
-              <h3 className="tl-title">
-                Your team<span className="accent">?</span>
-              </h3>
-              <a
-                href="#contact"
-                className="btn btn-primary btn-sm"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToTarget("#contact");
-                }}
-              >
-                Let&apos;s talk
-              </a>
-            </div>
-          </li>
         </ol>
       </div>
 
       <style>{`
-        .exp-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(32px,5vw,80px);align-items:start}
-        .exp-head{position:sticky;top:110px}
-        .exp-title{margin:22px 0 22px}
-        .tl{position:relative;list-style:none;margin:0;padding:0 0 0 44px}
-        .tl::before,.tl::after{content:"";position:absolute;left:11px;top:8px;bottom:8px;width:2px;border-radius:2px;background:var(--soft)}
-        .tl::after{background:var(--ink);transform-origin:50% 0;transform:scaleY(var(--p,0))}
-        .tl-stop{position:relative;padding-bottom:22px}
-        .tl-dot{position:absolute;left:-44px;top:24px;width:24px;height:24px;border-radius:50%;background:var(--paper);box-shadow:inset 0 0 0 2px var(--soft);transition:box-shadow .6s var(--ease),background-color .6s var(--ease),transform .6s var(--ease)}
-        .tl-dot::after{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--faint);transition:background-color .6s var(--ease)}
-        .tl-stop.lit .tl-dot{box-shadow:inset 0 0 0 2px var(--ink);transform:scale(1.08)}
-        .tl-stop.lit .tl-dot::after{background:var(--ink)}
-        .tl-card{background:#fff;border-radius:24px;padding:22px 24px;box-shadow:var(--hair);opacity:.45;transform:translateX(10px);transition:opacity .7s var(--ease),transform .8s var(--ease),box-shadow .7s var(--ease)}
-        .tl-stop.lit .tl-card{opacity:1;transform:none;box-shadow:var(--hair),0 24px 48px -32px rgba(13,13,13,.35)}
-        .tl-year{margin:0;font-size:12px;color:var(--ink);text-transform:uppercase;letter-spacing:.04em}
-        .tl-year span{color:var(--mute)}
-        .tl-title{margin:10px 0 0;font-size:clamp(22px,2vw,28px);font-weight:700;letter-spacing:-.035em;line-height:1.1}
-        .tl-place{margin:4px 0 0;color:var(--mute);font-size:15px}
-        .tl-detail{list-style:none;margin:14px 0 0;padding:12px 0 0;border-top:1px solid var(--line);display:grid;gap:8px}
-        .tl-detail li{position:relative;padding-left:16px;color:var(--ink-2);font-size:15px;line-height:1.55}
-        .tl-detail li::before{content:"";position:absolute;left:0;top:.75em;width:7px;height:1px;background:var(--ink)}
-        .tl-card.dashed{background:transparent;box-shadow:none;border:1.5px dashed rgba(13,13,13,.25);display:flex;flex-direction:column;align-items:flex-start;gap:14px}
-        .tl-card.dashed .tl-title{margin:0;font-size:clamp(30px,3vw,44px)}
+        .xp-title{margin:26px 0 0;font-family:var(--font-serif);font-weight:400;font-size:clamp(40px,5.2vw,76px);line-height:1.05;letter-spacing:-.015em;color:var(--ink)}
+        .xp-sub{max-width:44ch;margin:clamp(14px,1.6vw,22px) 0 0;font-size:clamp(17px,1.6vw,23px);line-height:1.45;color:#5b6170}
+
+        .xl{display:grid;gap:clamp(22px,2.6vw,40px);margin:clamp(44px,5vw,72px) 0 0;padding:0;list-style:none}
+        .xl-item{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(170px,.42fr) 150px;gap:clamp(18px,2.2vw,40px);align-items:center}
+        .xl-logo{display:grid;place-items:center;width:clamp(64px,5.6vw,80px);aspect-ratio:1;border-radius:24%;overflow:hidden;
+          background:linear-gradient(180deg,color-mix(in srgb,var(--c) 14%,#fff),#fff 70%);
+          box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--c) 16%,#fff),0 1px 0 #fff inset,0 12px 26px -18px color-mix(in srgb,var(--c) 70%,transparent);
+          color:var(--c);font-size:clamp(26px,2.3vw,34px);font-weight:800;letter-spacing:-.04em;transition:transform .5s var(--ease)}
+        .xl-logo img{width:62%;height:62%;object-fit:contain}
+        .xl-item:hover .xl-logo{transform:translateY(-3px) rotate(-3deg)}
+        .xl-main h3{margin:0;font-size:clamp(18px,1.5vw,22px);font-weight:500;letter-spacing:-.015em;line-height:1.25;color:var(--ink)}
+        .xl-main p{max-width:52ch;margin:6px 0 0;font-size:clamp(15px,1.25vw,18px);line-height:1.45;color:#4b5160}
+        .xl-role,.xl-years{font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#5b6170}
+        .xl-years{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+        .xl-years i{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18)}
+
         @media (max-width:900px){
-          .exp-grid{grid-template-columns:minmax(0,1fr)}
-          .exp-head{position:relative;top:auto}
-          .tl{padding-left:36px}
-          .tl::before,.tl::after{left:9px}
-          .tl-dot{left:-36px;width:20px;height:20px}
-          .tl-dot::after{inset:6px}
-          .tl-card{padding:18px}
+          .xl-item{grid-template-columns:auto minmax(0,1fr);align-items:start;row-gap:10px}
+          .xl-role{grid-column:2}
+          .xl-years{grid-column:2;margin-top:-4px}
+          .xl-role,.xl-years{font-size:11px}
         }
-        @media (prefers-reduced-motion:reduce){.tl-card{opacity:1;transform:none}}
       `}</style>
     </section>
   );

@@ -1,7 +1,7 @@
 # Aravind Prakash — Portfolio
 
 A "talking-video" personal portfolio: a looping intro video in the hero, then one calm, continuous scroll in white, black and gray.
-All copy comes from the résumé (`public/Aravind-Prakash-Resume.pdf`) and lives in one file: [`src/lib/data.ts`](src/lib/data.ts).
+All copy lives in one file: [`src/lib/data.ts`](src/lib/data.ts).
 
 **Stack:** Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS 4, Lenis.
 There's no GSAP, no WebGL and no runtime third-party scripts. Fonts are self-hosted.
@@ -27,12 +27,11 @@ Set `NEXT_PUBLIC_SITE_URL` (e.g. `https://example.com`) in production so Open Gr
 | # | Section | Component | Interaction |
 |---|---------|-----------|-------------|
 | — | Hero | `hero/Hero.tsx` | Seamless looping video (multiply-blended), sound unlocks on first interaction, pauses when < 35 % visible, ▶ / ❚❚ button |
-| 01 | About | `sections/About.tsx`, `ui/IdCard.tsx` | Lanyard ID card: pointer-driven damped pendulum, idle sway, flips on hover / tap / Enter–Space |
-| 02 | Skills | `sections/Skills.tsx`, `ui/TechLogo.tsx` | Periodic table, diagonal wave reveal, family filters, sticky inspector with logo |
-| 03 | Work | `sections/Work.tsx`, `ui/MiniUI.tsx` | Expanding accordion; illustrative grayscale mini-UIs (clip-path wipe). Vertical accordion on mobile |
-| 04 | Certifications | `sections/Certifications.tsx` | Ink-flood rows |
-| 05 | Experience | `sections/Experience.tsx` | Education + work timeline; the spine draws with scroll and stops light up |
-| 06 | Contact | `sections/Contact.tsx`, `sections/Footer.tsx` | Letter-hop heading, copy-email chip (aria-live), spinning badge |
+| 01 | Skills | `sections/Skills.tsx`, `ui/TechLogo.tsx` | Periodic table, diagonal wave reveal, family filters, sticky inspector with logo |
+| — | Work | `sections/Work.tsx`, `ui/MiniUI.tsx` | Five project rows: title, subtext and case-study link beside a tilted device mockup with a handwritten note. Add screenshots via `image` in `PROJECTS`
+| 02 | Certifications | `sections/Certifications.tsx` | Ink-flood rows |
+| 03 | Experience | `sections/Experience.tsx` | Education + work timeline; the spine draws with scroll and stops light up |
+| 04 | Contact | `sections/Contact.tsx`, `sections/Footer.tsx` | Letter-hop heading, copy-email chip (aria-live), spinning badge |
 
 Navigation (`Navigation.tsx`) has a scroll-progress bar, a frosted pill after scrolling, a sliding active indicator and a full-screen mobile menu.
 

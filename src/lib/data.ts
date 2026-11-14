@@ -1,6 +1,6 @@
 /**
  * Every piece of copy on the site lives here and is taken from the résumé
- * (public/Aravind-Prakash-Resume.pdf), including its embedded hyperlinks.
+ * (no longer in the repo), including its embedded hyperlinks.
  * Components only read from this file.
  */
 
@@ -27,13 +27,11 @@ export const PROFILE = {
   linkedin: "https://www.linkedin.com/in/-aravind-prakash/",
   portfolio: "https://valley-khaki-33770656.figma.site",
   resume: "/Aravind-Prakash-Resume.pdf",
-  resumeFileName: "Aravind-Prakash-Resume.pdf",
 } as const;
 
 export type NavItem = { id: string; label: string };
 
 export const NAV: NavItem[] = [
-  { id: "about", label: "About" },
   { id: "skills", label: "Skills" },
   { id: "work", label: "Work" },
   { id: "experience", label: "Experience" },
@@ -42,12 +40,10 @@ export const NAV: NavItem[] = [
 
 /** Section tags, numbered in page order. */
 export const SECTION_INDEX = {
-  about: "01",
-  skills: "02",
-  work: "03",
-  certifications: "04",
-  experience: "05",
-  contact: "06",
+  skills: "01",
+  certifications: "02",
+  experience: "03",
+  contact: "04",
 } as const;
 
 /* ------------------------------------------------------------------ skills */
@@ -129,6 +125,8 @@ export type Role = {
   start: string;
   end: string;
   points: string[];
+  /** Company logo in /public (e.g. "/logos/companies/stackly.svg"); omit to show a placeholder tile. */
+  logo?: string;
 };
 
 export const EXPERIENCE: Role[] = [
@@ -204,6 +202,8 @@ export type Degree = {
   place: string;
   start: string;
   end: string;
+  /** College logo in /public; omit to show a placeholder tile. */
+  logo?: string;
 };
 
 export const EDUCATION: Degree[] = [
@@ -241,6 +241,14 @@ export type Project = {
   role: string;
   github: string | null;
   ui: MiniUI;
+  /** One-line subtext under the title. */
+  tagline: string;
+  /** Handwritten note beside the mockup. */
+  note: string;
+  /** Screenshot in /public (e.g. "/work/dubai-supplier-hub.webp"); null shows the sketch. */
+  image: string | null;
+  /** Case-study URL; null links to Contact ("Ask for the case study"). */
+  caseStudy: string | null;
 };
 
 export const PROJECTS: Project[] = [
@@ -255,6 +263,10 @@ export const PROJECTS: Project[] = [
     role: "Senior UI/UX Designer",
     github: null,
     ui: "hub",
+    tagline: "One platform for owners to run multiple businesses and their teams.",
+    note: "many businesses, one hub",
+    image: null,
+    caseStudy: null,
   },
   {
     id: "us-bank-world-bank",
@@ -267,6 +279,10 @@ export const PROJECTS: Project[] = [
     role: "User Experience Designer",
     github: null,
     ui: "bank",
+    tagline: "Smoother banking journeys, plus a proof of concept for World Bank.",
+    note: "banking, made easier",
+    image: null,
+    caseStudy: null,
   },
   {
     id: "odc-rebranding",
@@ -278,6 +294,10 @@ export const PROJECTS: Project[] = [
     role: "User Experience Designer",
     github: null,
     ui: "rebrand",
+    tagline: "A refreshed identity for the Design and Support team, delivered together.",
+    note: "same team, fresh look",
+    image: null,
+    caseStudy: null,
   },
   {
     id: "workforce-visitor-jobs",
@@ -290,6 +310,10 @@ export const PROJECTS: Project[] = [
     role: "UI/UX Designer",
     github: null,
     ui: "apps",
+    tagline: "Workforce management, visitor management and job search, designed end to end.",
+    note: "three apps, one craft",
+    image: null,
+    caseStudy: null,
   },
   {
     id: "promo-micro-interactions",
@@ -301,17 +325,10 @@ export const PROJECTS: Project[] = [
     role: "UI/UX Designer",
     github: null,
     ui: "motion",
-  },
-  {
-    id: "branding-banners",
-    index: "06",
-    title: "Branding & Social Banners",
-    kicker: "Walinns Innovation · Linlax Info Tech · 2019 – 2020",
-    description: "Worked as graphic designer for branding and social media marketing banners",
-    features: ["Branding", "Social media", "Marketing banners", "Graphic design"],
-    role: "UI Designer",
-    github: null,
-    ui: "banners",
+    tagline: "Promo videos and micro-interactions for apps and social media.",
+    note: "small moments, big feel",
+    image: null,
+    caseStudy: null,
   },
 ];
 
@@ -330,25 +347,57 @@ export const ACHIEVEMENTS: never[] = [];
 
 /* --------------------------------------------------------------- ID card */
 
-export const ID_CARD = {
-  band: "DESIGNER ID",
-  rows: [
-    { k: "Exp.", v: "6+ years" },
-    { k: "Base", v: "Coimbatore" },
-    { k: "Class of", v: "2017" }, // MCA graduation year
-  ],
-  back: [
-    "UI/UX Designer with 6+ years of experience",
-    "Master of Computer Applications — Kumaraguru College of Technology",
-    "Design thinking · user research · end-to-end product design",
-    "Dubai Supplier Hub · US Bank · World Bank POC",
-    "Coursera — Advanced UX Research · Functions of MIRO",
-  ],
-};
-
 export const QUICK_FACTS = [
   { k: "Location", v: PROFILE.location },
   { k: "Education", v: "MCA, Kumaraguru College of Technology" },
   { k: "Current role", v: "Senior UI/UX Designer, Stackly · Dec 2025 – Present" },
   { k: "Email", v: PROFILE.email, href: `mailto:${PROFILE.email}` },
 ];
+
+/* -------------------------------------------------------------- ticket hero */
+
+/** Copy for the ticket hero (hero/TicketHero.tsx). Years are set here once. */
+const HERO_YEARS = "8+";
+
+export const HERO = {
+  years: HERO_YEARS,
+  pill: "Senior UI/UX Designer",
+  /** Each line: [bold sentence, light sentence]. */
+  headline: [
+    { strong: "I explore.", light: "I question." },
+    { strong: "I design.", light: "I simplify." },
+  ],
+  facts: [`${HERO_YEARS} Years of Experience`, "UI/UX Design", "Product Design"],
+  description:
+    "Transforming complex problems into intuitive, meaningful digital experiences through thoughtful design and purposeful innovation.",
+  ticket: {
+    edition: "Portfolio 2018",
+    role: ["Senior UI/UX", "Designer"],
+    meta: ["Product Design", `${PROFILE.location}, IN`],
+    portrait: "/hero/ticket-portrait.webp",
+    info: [
+      { k: "Role", v: "Senior UI/UX Designer" },
+      { k: "Experience", v: `${HERO_YEARS} Years` },
+      { k: "Speciality", v: "Digital Products" },
+    ],
+    serial: "AP2026 08UX 001",
+    /** Back of the ticket (shown when it flips). */
+    back: {
+      title: "Who am I?",
+      groups: [
+        {
+          k: "Skills",
+          chips: ["Wireframing", "Prototyping", "UX Strategy", "Usability Testing", "Design Systems", "Micro-interactions"],
+        },
+        { k: "Tools", chips: ["Figma", "Sketch", "Miro", "Webflow", "Framer", "Adobe Suite"] },
+        {
+          k: "Education",
+          chips: ["Master of Computer Applications", "2015–2017"],
+          strong: "Kumaraguru College of Technology",
+        },
+      ],
+      signature: PROFILE.name,
+      found: "If found, say hello",
+    },
+  },
+};
